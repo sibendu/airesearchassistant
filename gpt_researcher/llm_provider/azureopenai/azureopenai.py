@@ -14,7 +14,7 @@ Needs additional env vars such as:
 config.py settings for Azure OpenAI should look like:
     self.embedding_provider = os.getenv('EMBEDDING_PROVIDER', 'azureopenai')
     self.llm_provider = os.getenv('LLM_PROVIDER', "azureopenai")
-    self.fast_llm_model = os.getenv('FAST_LLM_MODEL', "gpt-3.5-turbo-16k") #Deployment name of your GPT3.5T model as per azure OpenAI studio deployment section
+    self.fast_llm_model = os.getenv('FAST_LLM_MODEL', "gpt-35-turbo-16k") #Deployment name of your GPT3.5T model as per azure OpenAI studio deployment section
     self.smart_llm_model = os.getenv('SMART_LLM_MODEL', "gpt4")  #Deployment name of your GPT4 1106-Preview+ (GPT4T) model as per azure OpenAI studio deployment section
 '''
 class AzureOpenAIProvider:
@@ -30,6 +30,7 @@ class AzureOpenAIProvider:
         self.max_tokens = max_tokens
         self.api_key = self.get_api_key()
         self.llm = self.get_llm_model()
+        
 
     def get_api_key(self):
         """
@@ -46,11 +47,12 @@ class AzureOpenAIProvider:
 
     def get_llm_model(self):
         # Initializing the chat model
-        llm = AzureChatOpenAI(
-            deployment_name=self.deployment_name,
+        llm = AzureChatOpenAI(            
+            azure_deployment=self.deployment_name,
             temperature=self.temperature,
             max_tokens=self.max_tokens,
-            api_key=self.api_key
+            api_key=self.api_key,
+            azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]	
         )
 
         return llm
